@@ -1,0 +1,8 @@
+{
+    "HZN_ORG_ID": "$HZN_ORG_ID",
+    "MetadataVars": {
+        "DOCKER_IMAGE_BASE": "openhorizon/achatina",
+        "SERVICE_NAME": "achatina",
+        "SERVICE_VERSION": "2.0.0"
+    }
+}
