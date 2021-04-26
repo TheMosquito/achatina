@@ -1,0 +1,101 @@
+{
+    "org": "$HZN_ORG_ID",
+    "label": "$SERVICE_NAME for $ARCH",
+    "description": "A top-level service that takes an image and sends it to a visual inferencing plugin and publishes results to an MQTT broker and optionally a Kafka broker",
+    "public": true,
+    "documentation": "https://github.com/TheMosquito/achatina/blob/master/achatina/Makefile",
+    "url": "$SERVICE_NAME",
+    "version": "$SERVICE_VERSION",
+    "arch": "$ARCH",
+    "sharable": "multiple",
+    "requiredServices": [
+        {
+            "url": "$ACHATINA_PLUGIN",
+            "org": "$HZN_ORG_ID",
+            "versionRange": "[0.0.0,INFINITY)",
+            "arch": "$ARCH"
+        },
+        {
+            "url": "mqtt",
+            "org": "$HZN_ORG_ID",
+            "versionRange": "[0.0.0,INFINITY)",
+            "arch": "$ARCH"
+        },
+        {
+            "url": "cpu-only",
+            "org": "myorg",
+            "versionRange": "1.1.0",
+            "arch": "amd64"
+        }
+    ],
+    "userInput": [
+        {
+            "name": "ACHATINA_PLUGIN",
+            "label": "The visual inferencing plugin to use",
+            "type": "string",
+            "defaultValue": "cpu-only"
+        },
+        {
+            "name": "MQTT_BROKER_ADDRESS",
+            "label": "The MQTT broker to publish to",
+            "type": "string",
+            "defaultValue": "mqtt"
+        },
+        {
+            "name": "MQTT_BROKER_PORT",
+            "label": "The MQTT broker port",
+            "type": "string",
+            "defaultValue": "1883"
+        },
+        {
+            "name": "MQTT_PUB_TOPIC",
+            "label": "The MQTT topic to publish to",
+            "type": "string",
+            "defaultValue": "/detect"
+        },
+        {
+            "name": "KAFKA_BROKER_URLS",
+            "label": "Comma-separated list of broker URLs in your Kafka broker pool",
+            "type": "string",
+            "defaultValue": ""
+        },
+        {
+            "name": "KAFKA_API_KEY",
+            "label": "The Kafka API key",
+            "type": "string",
+            "defaultValue": ""
+        },
+        {
+            "name": "KAFKA_PUB_TOPIC",
+            "label": "The Kafka topic to publish to",
+            "type": "string",
+            "defaultValue": ""
+        },
+        {
+            "name": "INPUT_URL",
+            "label": "The image source you want to run achatina on",
+            "type": "string",
+            "defaultValue": ""
+        },
+        {
+            "name": "NODE",
+            "label": "The name of the NODE",
+            "type": "string",
+            "defaultValue": ""
+        },
+        {
+            "name": "HOST_IP",
+            "label": "The default interface IP address of the NODE",
+            "type": "string",
+            "defaultValue": ""
+        }
+    ],
+    "deployment": {
+        "services": {
+            "achatina": {
+                "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+                "privileged": false
+            }
+        }
+    }
+}
