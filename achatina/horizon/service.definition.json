@@ -36,7 +36,7 @@
             "defaultValue": "cpu-only"
         },
         {
-            "name": "MQTT_BROKER_ADDRESS",
+            "name": "MQTT_BROKER_URL",
             "label": "The MQTT broker to publish to",
             "type": "string",
             "defaultValue": "mqtt"
