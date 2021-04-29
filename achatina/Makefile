@@ -33,7 +33,7 @@ SERVICE_VERSION:="2.0.0"
 # Optionally configure an INPUT_URL in your environment. You have 3 choices:
 #   1. Don't set it and the restcam service or a static image will be used
 #   2. Provide a valid HTTP image URL. E.g.:
-#          https://commons.wikimedia.org/wiki/File:Example.jpg
+#          https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg/780px-Einstein_1921_by_F_Schmutzer_-_restoration.jpg
 #   3. Provide a valid RTSP stream URL. E.g.:
 #           rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 
@@ -47,7 +47,7 @@ HOST_IP:=$(shell ../helper -i)
 # in your environment. Note that the "restcam" service normally binds to
 # this port and it can simulate a camera if no camera is available
 # (i.e., it will return static images if access to a local camera fails).
-DEFAULT_INPUT_URL:="http://localhost:8888/"
+DEFAULT_INPUT_URL:="http://${HOST_IP}:8888/"
 
 build: check-dockerhubid
 	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) -f ./Dockerfile.$(ARCH) .
