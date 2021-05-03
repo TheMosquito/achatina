@@ -28,7 +28,7 @@ SERVICE_NAME:="mqtt"
 SERVICE_VERSION:="1.1.0"
 
 # These statements automatically configure some environment variables
-ARCH:=$(shell ../../helper -a)
+ARCH?=$(shell ../../helper -a)
 
 build: check-dockerhubid
 	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) -f ./Dockerfile.$(ARCH) .
@@ -67,6 +67,42 @@ clean: check-dockerhubid
 	-docker rm -f ${SERVICE_NAME} 2>/dev/null || :
 	-docker rmi $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) 2>/dev/null || :
 	-docker network rm mqtt-net 2>/dev/null || :
+
+publish-service: check-dockerhubid
+	ARCH=$(ARCH) \
+           SERVICE_NAME="$(SERVICE_NAME)" \
+           SERVICE_VERSION="$(SERVICE_VERSION)"\
+           DOCKER_IMAGE_BASE="$(DOCKERHUB_ID)/$(SERVICE_NAME)"\
+           hzn exchange service publish -O -f horizon/service.definition.json
+
+publish-service-overwrite: check-dockerhubid
+	ARCH=$(ARCH) \
+           SERVICE_NAME="$(SERVICE_NAME)" \
+           SERVICE_VERSION="$(SERVICE_VERSION)"\
+           DOCKER_IMAGE_BASE="$(DOCKERHUB_ID)/$(SERVICE_NAME)"\
+           hzn exchange service publish -O -P -f horizon/service.definition.json
+
+publish-all-services: check-dockerhubid
+	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm:$(SERVICE_VERSION) -f ./Dockerfile.arm .
+	docker push $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm:$(SERVICE_VERSION)
+	ARCH=arm $(MAKE) publish-service
+	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm64:$(SERVICE_VERSION) -f ./Dockerfile.arm64 .
+	docker push $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm64:$(SERVICE_VERSION)
+	ARCH=arm64 $(MAKE) publish-service
+	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_amd64:$(SERVICE_VERSION) -f ./Dockerfile.amd64 .
+	docker push $(DOCKERHUB_ID)/$(SERVICE_NAME)_amd64:$(SERVICE_VERSION)
+	ARCH=amd64 $(MAKE) publish-service
+
+publish-all-services-overwrite: check-dockerhubid
+	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm:$(SERVICE_VERSION) -f ./Dockerfile.arm .
+	docker push $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm:$(SERVICE_VERSION)
+	ARCH=arm $(MAKE) publish-service-overwrite
+	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm64:$(SERVICE_VERSION) -f ./Dockerfile.arm64 .
+	docker push $(DOCKERHUB_ID)/$(SERVICE_NAME)_arm64:$(SERVICE_VERSION)
+	ARCH=arm64 $(MAKE) publish-service-overwrite
+	docker build -t $(DOCKERHUB_ID)/$(SERVICE_NAME)_amd64:$(SERVICE_VERSION) -f ./Dockerfile.amd64 .
+	docker push $(DOCKERHUB_ID)/$(SERVICE_NAME)_amd64:$(SERVICE_VERSION)
+	ARCH=amd64 $(MAKE) publish-service-overwrite
 
 .PHONY: build run test test-sub test-pub stop clean
 
