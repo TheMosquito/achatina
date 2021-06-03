@@ -5,9 +5,14 @@ include ../../checks.mk
 
 SERVICE_NAME:="openvino"
 SERVICE_VERSION:="1.1.0"
+PATTERN_NAME:="pattern-openvino"
 
 # These statements automatically configure some environment variables
 ARCH:=$(shell ../../helper -a)
+
+# Leave blank for open DockerHub containers
+# CONTAINER_CREDS:=-r "registry.wherever.com:myid:mypw"
+CONTAINER_CREDS:=
 
 build: check-dockerhubid
 	@echo "Building the OpenVino plugin for Movidius hardware"
@@ -48,5 +53,25 @@ clean: check-dockerhubid
 	-docker rm -f ${SERVICE_NAME} 2>/dev/null || :
 	-docker rmi $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) 2>/dev/null || :
 
-.PHONY: build run dev stop test clean
+publish-service:
+	@ARCH=$(ARCH) \
+	    SERVICE_NAME="$(SERVICE_NAME)" \
+	    SERVICE_VERSION="$(SERVICE_VERSION)"\
+	    SERVICE_CONTAINER="$(DOCKERHUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
+	    hzn exchange service publish -O $(CONTAINER_CREDS) -P -f horizon/service.definition.json
+
+publish-pattern:
+	@ARCH=$(ARCH) \
+	    SERVICE_NAME="$(SERVICE_NAME)" \
+	    SERVICE_VERSION="$(SERVICE_VERSION)"\
+	    PATTERN_NAME="$(PATTERN_NAME)" \
+	    hzn exchange pattern publish -f horizon/pattern.json
+
+agent-run:
+	hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
+
+agent-stop:
+	hzn unregister -f
+
+.PHONY: build run dev stop test clean publish-service publish-pattern agent-run agent-stop
 
