@@ -12,9 +12,10 @@
 # Include the make file containing all the check-* targets
 include ../checks.mk
 
-# Give this achatina service a name and version number
+# Give this achatina service a name, version number, and pattern name
 SERVICE_NAME:="achatina"
 SERVICE_VERSION:="2.0.0"
+PATTERN_NAME:="pattern-achatina"
 
 # Optionally configure for MQTT publication. By default it publishes to a
 # local MQTT broker using the URL, "mqtt", and publishes to the topic,
@@ -41,6 +42,10 @@ SERVICE_VERSION:="2.0.0"
 ARCH:=$(shell ../helper -a)
 NODE:=$(shell ../helper -n)
 HOST_IP:=$(shell ../helper -i)
+# Leave blank for open DockerHub containers
+# CONTAINER_CREDS:=-r "registry.wherever.com:myid:mypw"
+CONTAINER_CREDS:=
+
 
 # ***************************************************************************
 #          IMPORTANT NOTEs REGARDING THE SHARED CAMERA SERVICES
@@ -110,5 +115,25 @@ clean: check-dockerhubid
 	-docker rm -f ${SERVICE_NAME} 2>/dev/null || :
 	-docker rmi $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) 2>/dev/null || :
 
-.PHONY: build run dev stop clean
+publish-service:
+  @ARCH=$(ARCH) \
+      SERVICE_NAME="$(SERVICE_NAME)" \
+      SERVICE_VERSION="$(SERVICE_VERSION)"\
+      SERVICE_CONTAINER="$(DOCKERHUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
+      hzn exchange service publish -O $(CONTAINER_CREDS) -P -f horizon/service.definition.json
+
+publish-pattern:
+  @ARCH=$(ARCH) \
+      SERVICE_NAME="$(SERVICE_NAME)" \
+      SERVICE_VERSION="$(SERVICE_VERSION)"\
+      PATTERN_NAME="$(PATTERN_NAME)" \
+      hzn exchange pattern publish -f horizon/pattern.json
+
+agent-run:
+  hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
+
+agent-stop:
+  hzn unregister -f
+
+.PHONY: build run dev stop clean publish-service publish-pattern agent-run agent-stop
 
