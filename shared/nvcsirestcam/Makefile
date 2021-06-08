@@ -26,9 +26,15 @@ include ../../checks.mk
 # can be used as a direct drop-in replacement for that servcie on Jetsons.
 SERVICE_NAME:="restcam"
 SERVICE_VERSION:="1.0.0"
+PATTERN_NAME:="pattern-restcam"
 
 # These statements automatically configure some environment variables
 ARCH:=$(shell ../../helper -a)
+
+# Leave blank for open DockerHub containers
+# CONTAINER_CREDS:=-r "registry.wherever.com:myid:mypw"
+CONTAINER_CREDS:=
+
 
 # You may optionally define these variables in your shell environment:
 #    CAM_SOURCE (0-3), CAM_ORIENTATION (0-3), CAM_RES (2-12)
@@ -112,5 +118,25 @@ clean: check-dockerhubid
 	-docker rmi $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) 2>/dev/null || :
 	-docker network rm cam-net 2>/dev/null || :
 
-.PHONY: build run dev test stop clean
+publish-service:
+	@ARCH=$(ARCH) \
+	    SERVICE_NAME="$(SERVICE_NAME)" \
+	    SERVICE_VERSION="$(SERVICE_VERSION)"\
+	    SERVICE_CONTAINER="$(DOCKERHUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
+	    hzn exchange service publish -O $(CONTAINER_CREDS) -P -f service.json
+
+publish-pattern:
+	@ARCH=$(ARCH) \
+	    SERVICE_NAME="$(SERVICE_NAME)" \
+	    SERVICE_VERSION="$(SERVICE_VERSION)"\
+	    PATTERN_NAME="$(PATTERN_NAME)" \
+	    hzn exchange pattern publish -f pattern.json
+
+agent-run:
+	hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
+
+agent-stop:
+	hzn unregister -f
+
+.PHONY: build run dev test stop clean publish-service publish-pattern agent-run agent-stop
 
