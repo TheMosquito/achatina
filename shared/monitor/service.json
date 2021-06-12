@@ -20,7 +20,7 @@
     "deployment": {
         "services": {
             "monitor": {
-                "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+                "image": "$SERVICE_CONTAINER",
                 "ports": [
                     {
                         "HostPort": "5200:5200/tcp",
