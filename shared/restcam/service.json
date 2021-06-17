@@ -38,7 +38,7 @@
     "deployment": {
         "services": {
             "restcam": {
-                "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+                "image": "$SERVICE_CONTAINER",
                 "ports": [
                     {
                         "HostPort": "8888:80/tcp",
