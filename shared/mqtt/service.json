@@ -13,7 +13,7 @@
     "deployment": {
         "services": {
             "mqtt": {
-                "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+                "image": "$SERVICE_CONTAINER",
                 "ports": [
                     {
                         "HostPort": "1883:1883/tcp",
