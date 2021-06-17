@@ -1,5 +1,5 @@
 {
-    "name": "pattern-${SERVICE_NAME}-$ARCH",
+    "name": "$PATTERN_NAME",
     "label": "Edge $SERVICE_NAME Service Pattern for $ARCH",
     "description": "Pattern for $SERVICE_NAME for $ARCH",
     "public": false,
