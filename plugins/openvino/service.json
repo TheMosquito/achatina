@@ -27,7 +27,7 @@
     "deployment": {
         "services": {
             "openvino": {
-                "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+                "image": "$SERVICE_CONTAINER",
                 "privileged": true,
                 "devices": ["/dev:/dev"]
             }
