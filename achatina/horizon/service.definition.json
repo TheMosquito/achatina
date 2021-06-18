@@ -20,12 +20,6 @@
             "org": "$HZN_ORG_ID",
             "versionRange": "[0.0.0,INFINITY)",
             "arch": "$ARCH"
-        },
-        {
-            "url": "cpu-only",
-            "org": "myorg",
-            "versionRange": "1.1.0",
-            "arch": "amd64"
         }
     ],
     "userInput": [
