@@ -116,24 +116,24 @@ clean: check-dockerhubid
 	-docker rmi $(DOCKERHUB_ID)/$(SERVICE_NAME)_$(ARCH):$(SERVICE_VERSION) 2>/dev/null || :
 
 publish-service:
-  @ARCH=$(ARCH) \
-      SERVICE_NAME="$(SERVICE_NAME)" \
-      SERVICE_VERSION="$(SERVICE_VERSION)"\
-      SERVICE_CONTAINER="$(DOCKERHUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
-      hzn exchange service publish -O $(CONTAINER_CREDS) -P -f horizon/service.definition.json
+	@ARCH=$(ARCH) \
+        SERVICE_NAME="$(SERVICE_NAME)" \
+        SERVICE_VERSION="$(SERVICE_VERSION)"\
+        SERVICE_CONTAINER="$(DOCKERHUB_ID)/$(SERVICE_NAME):$(SERVICE_VERSION)" \
+        hzn exchange service publish -O $(CONTAINER_CREDS) -P -f horizon/service.definition.json
 
 publish-pattern:
-  @ARCH=$(ARCH) \
-      SERVICE_NAME="$(SERVICE_NAME)" \
-      SERVICE_VERSION="$(SERVICE_VERSION)"\
-      PATTERN_NAME="$(PATTERN_NAME)" \
-      hzn exchange pattern publish -f horizon/pattern.json
+	@ARCH=$(ARCH) \
+        SERVICE_NAME="$(SERVICE_NAME)" \
+        SERVICE_VERSION="$(SERVICE_VERSION)"\
+        PATTERN_NAME="$(PATTERN_NAME)" \
+        hzn exchange pattern publish -f horizon/pattern.json
 
 agent-run:
-  hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
+	hzn register --pattern "${HZN_ORG_ID}/$(PATTERN_NAME)"
 
 agent-stop:
-  hzn unregister -f
+	hzn unregister -f
 
 .PHONY: build run dev stop clean publish-service publish-pattern agent-run agent-stop
 
