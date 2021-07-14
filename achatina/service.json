@@ -87,7 +87,7 @@
     "deployment": {
         "services": {
             "achatina": {
-                "image": "${DOCKER_IMAGE_BASE}_$ARCH:$SERVICE_VERSION",
+                "image": "$SERVICE_CONTAINER",
                 "privileged": false
             }
         }
