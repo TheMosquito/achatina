@@ -3,6 +3,7 @@
 # Include the make file containing all the check-* targets
 include ../../checks.mk
 
+# Give this service a name, version number, and pattern name
 SERVICE_NAME:="cpu-only"
 SERVICE_VERSION:="1.1.0"
 PATTERN_NAME:="pattern-cpu-only"
