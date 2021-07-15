@@ -1,0 +1,46 @@
+{
+    "org": "$HZN_ORG_ID",
+    "label": "$SERVICE_NAME for $ARCH",
+    "description": "restcam for NVIDIA Jetson MIPI CSI cameras",
+    "public": true,
+    "documentation": "https://github.com/MegaMosquito/achatina/blob/master/shared/nvcsirestcam/Makefile",
+    "url": "$SERVICE_NAME",
+    "version": "$SERVICE_VERSION",
+    "arch": "$ARCH",
+    "sharable": "multiple",
+    "requiredServices": [],
+    "userInput": [
+        {
+            "name": "CAM_SOURCE",
+            "label": "Cam source",
+            "type": "int",
+            "defaultValue": "1"
+        },
+        {
+            "name": "CAM_ORIENTATION",
+            "label": "Camera sensor orientation value",
+            "type": "int",
+            "defaultValue": "0"
+        },
+        {
+            "name": "CAM_RES",
+            "label": "Image width & height number",
+            "type": "int",
+            "defaultValue": "4"
+        }
+    ],
+    "deployment": {
+        "services": {
+            "restcam": {
+                "image": "openhorizon/restcam_$ARCH:$SERVICE_VERSION",
+                "ports": [
+                    {
+                        "HostPort": "8888:80/tcp",
+                        "HostIP": "127.0.0.1"
+                    }
+                ],
+                "privileged": true
+            }
+        }
+    }
+}
